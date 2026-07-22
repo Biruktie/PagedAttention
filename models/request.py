@@ -33,6 +33,8 @@ class Request:
         self.page_table = None
         self.current_physical_block = None
 
+        self.waiting_for_block = None
+
     def initialize_page_table(self):
         if self.page_table is None:
             self.page_table = PageTable()
@@ -63,6 +65,7 @@ class Request:
         self.status = RequestStatus.WAITING
         self.current_physical_block = None
         self.completion_hash = None
+        self.waiting_for_block = None
 
     def mark_swapped(self):
         self.status = RequestStatus.SWAPPED
