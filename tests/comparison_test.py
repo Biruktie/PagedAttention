@@ -10,6 +10,7 @@ from allocators.naive_contiguous_allocator import NaiveContiguousAllocator
 from simulation.naive_simulation import NaiveSimulation
 
 from metrics.metrics_calculator import MetricsCalculator
+from correctness.correctness_harness import CorrectnessHarness
 
 generator = WorkLoadGenerator(
     seed=42,
@@ -33,9 +34,14 @@ paged_allocator = PagedAllocator(
     block_size=4
 )
 
+harness = CorrectnessHarness(
+    paged_allocator=paged_allocator
+)
+
 paged_simulation = Simulation(
     requests=paged_requests,
-    paged_allocator=paged_allocator
+    paged_allocator=paged_allocator,
+    harness=harness
 )
 
 

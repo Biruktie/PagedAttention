@@ -35,7 +35,14 @@ class NaiveSimulation:
 
     def generate_tokens(self):
         for request in self.active_requests:
-            request.record_token_generated()
+            if request.is_finished():
+                continue
+            token = (
+                f"R{request.request_id}"
+                f"_T{request.generated_tokens}"
+            )
+
+            request.record_token_generated(token)
 
     def finish_completed_requests(self):
         remaining_requests = []

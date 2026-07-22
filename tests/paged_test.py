@@ -62,13 +62,6 @@ def run_test(block_size, seed):
 
     print("Allocated blocks:", len(physical_allocator.allocated_blocks))
 
-# block_sizes = [4, 8, 16, 32]
-# seeds = [42, 123, 456, 789, 1000]
-
-# for block_size in block_sizes:
-#     for seed in seeds:
-#         run_test(block_size=block_size, seed=seed)
-
 run_test(4, 42)
 
 print("\nAll block size and seed tests passed!")
