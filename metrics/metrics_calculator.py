@@ -27,10 +27,13 @@ class MetricsCalculator:
 
         if total_reserved == 0:
             return 0.0
-        
-        internal_fragmentation = MetricsCalculator.calculate_internal_fragmentation(requests)
-        
-        return internal_fragmentation / total_reserved
+
+        total_used = sum(
+            request.actual_length
+            for request in requests
+        )
+                
+        return (total_reserved - total_used) / total_reserved
     
     @staticmethod
     def calculate_paged_internal_fragmentation(requests, block_size):

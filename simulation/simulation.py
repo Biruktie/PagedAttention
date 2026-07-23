@@ -66,7 +66,7 @@ class Simulation:
             "rejected": 0,
             "rejection_rate": 0.0,
             "peak_utilization": self.paged_allocator.physical_allocator.get_peak_utilization(),
-            "peak_external_fragmentation": 0,
+            "external_fragmentation": 0,
             "internal_fragmentation": MetricsCalculator.calculate_paged_internal_fragmentation(self.finished_requests, self.paged_allocator.block_size),
             "internal_fragmentation_ratio": MetricsCalculator.calculate_paged_internal_fragmentation_ratio(self.finished_requests, self.paged_allocator.block_size)
         }

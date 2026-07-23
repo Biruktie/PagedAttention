@@ -62,17 +62,13 @@ class NaiveSimulation:
         if (self.next_request_index < len(self.requests)):
             next_request = self.requests[self.next_request_index]
 
-            external_fragmentation_ratio = self.naive_allocator.get_external_fragmentation_ratio(next_request.max_length * 2)
+            external_fragmentation_ratio = self.naive_allocator.get_external_fragmentation_ratio(next_request.max_length)
+            self.external_fragmentation_history.append(external_fragmentation_ratio)
 
-            self.naive_allocator.peak_external_fragmentation = max(
-                self.naive_allocator.peak_external_fragmentation,
-                external_fragmentation_ratio
-            )
         else:
             external_fragmentation_ratio = 0.0
         
         self.internal_fragmentation_history.append(internal_fragmentation)
-        self.external_fragmentation_history.append(external_fragmentation_ratio)
 
         self.avg_internal_fragmentation = (
             sum(self.internal_fragmentation_history) / len(self.internal_fragmentation_history) if self.internal_fragmentation_history else 0.0
@@ -111,6 +107,6 @@ class NaiveSimulation:
         ):
             self.admit_new_requests()
             self.generate_tokens()
-            self.record_metrics()
             self.finish_completed_requests()
+            self.record_metrics()
             self.current_time += 1.0

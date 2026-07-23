@@ -6,14 +6,14 @@ from metrics.metrics_calculator import MetricsCalculator
 generator = WorkLoadGenerator(
     seed=42,
     num_requests=200,
-    arrival_rate=0.5,
+    arrival_rate=2.0,
     service_rate=0.01
 )
 
 requests = generator.generate_workload()
 
 naive_allocator = NaiveContiguousAllocator(
-    total_memory=800
+    total_memory=200
 )
 
 simulation = NaiveSimulation(

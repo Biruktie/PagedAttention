@@ -9,7 +9,6 @@ class NaiveContiguousAllocator:
 
         self.rejected_requests = 0
         self.peak_allocated = 0
-        self.peak_external_fragmentation = 0
 
     def find_free_region(self, required_length):
         free_start = None
@@ -125,10 +124,7 @@ class NaiveContiguousAllocator:
         external_fragmentation = self.get_external_fragmentation(required_length)
 
         return external_fragmentation / free_memory
-    
-    def get_peak_external_fragmentation(self):
-        return self.peak_external_fragmentation
-    
+
     def get_memory_map(self):
         if not self.allocations:
             return "Empty"
