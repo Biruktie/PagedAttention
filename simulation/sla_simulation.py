@@ -25,8 +25,8 @@ class SLASimulation:
         self.finished_requests = []
         self.terminated_requests = []
 
-        self.deadline_misses = 0
-        self.budget_terminations = 0
+        self.recompute_count = 0
+        self.swap_count = 0
 
     def admit_new_requests(self):
 
@@ -73,7 +73,7 @@ class SLASimulation:
                 break
 
             if request.status == RequestStatus.SWAPPED:
-                self.premption_manager.restore(request)
+                self.preemption_manager.restore(request)
 
             request.status = RequestStatus.RUNNING
 
@@ -96,9 +96,19 @@ class SLASimulation:
             success =self.paged_allocator.allocate_token(request, token)
 
             if not success:
-                remaining_requests.append(
-                    request
-                )
+                victim = self.preemption_manager.choose_victim(self.active_requests)
+                if victim is not None:
+                    mode = self.preemption_manager.evict(victim)
+
+                    if mode == "recompute":
+                        self.recompute_count += 1
+                    elif mode == "swap":
+                        self.swap_count += 1
+
+                    self.active_requests.remove(victim)
+                    self.waiting_requests.append(victim)
+
+                remaining_requests.append(request)
 
                 continue
 
@@ -124,9 +134,11 @@ class SLASimulation:
         return {
             "total_requests": len(self.requests),
             "finished": len(self.finished_requests),
-            "budget_terminations": self.budget_terminations,
-            "deadline_misses": self.deadline_misses,
-            "orphaned_blocks": orphaned_blocks
+            "budget_terminations": self.scheduler.budget_terminations,
+            "deadline_misses": self.scheduler.deadline_misses,
+            "orphaned_blocks": orphaned_blocks,
+            "recompute_evictions": self.recompute_count,
+            "swap_evictions": self.swap_count
         }
 
     def run(self):
@@ -141,6 +153,4 @@ class SLASimulation:
             self.generate_tokens()
             self.current_time += 1.0
 
-        self.deadline_misses = self.scheduler.deadline_misses
-        self.budget_terminations = self.scheduler.budget_terminations
         return self.get_metrics()
